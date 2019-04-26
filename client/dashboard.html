@@ -3,6 +3,7 @@
     <div style="height: 330px; background-color: rgb(10, 42, 102);">
         <center>
             <br>
+            <!-- Teacher Profile Section -->
             <img src="https://media.licdn.com/dms/image/C4D03AQG4Bk4R9pF_Ug/profile-displayphoto-shrink_800_800/0?e=1558569600&v=beta&t=jJPumz3-B8wKLxkUt6WcBM_wRWVIeWGxtGGpyfzm7cE"
                 alt="" class="ui image circle small">
             <h3 style="font-size: 25px; color: white;">Adam Green</h3>
@@ -10,7 +11,9 @@
             <h3 style="margin-top: -10px; color: white;"><span id="countdown"></span></h3>
         </center>
     </div>
+    <!-- Add in-file vanilla JavaScript -->
     <script>
+        
         // Set the date we're counting down to
         var countDownDate = new Date().getTime() + 4000;
 
@@ -29,26 +32,32 @@
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Display the result in the element with id="demo"
+            // Display the result in the element with id="countdown"
             document.getElementById("countdown").innerHTML = `Staring in: 00:00:${seconds}`;
-
+            
+            
+            // If the count down is finished, reveal enter class button
             var goToClassButton = `<a href="office-hour.html" class="ui orange button">Enter Class</a>`
-            // If the count down is finished, write some text 
             if (distance < 0) {
                 clearInterval(x);
                 document.getElementById("countdown").innerHTML = goToClassButton;
             }
         }, 1000);
     </script>
+    
+    <!-- Sturcture discussion forum section -->
     <form name="question-form" class="main ui raised very text container segment reply form">
         <div class="field">
             <textarea required id="question" rows="2"></textarea>
         </div>
+        
+        <!-- Submit question on click the Submit button-->
         <div class="ui blue labeled submit icon button" onclick="submitQuestion('Alexander Wu');">
             <i class="icon edit"></i> Submit Question
         </div>
         <div class="ui right close rail">
             <div class="ui segment left">
+                <!-- Create sidebar to list all the office hours -->
                 <ul class="collection">
                     <li class="collection-item avatar">
                         <img src="https://media.licdn.com/dms/image/C4D03AQG4Bk4R9pF_Ug/profile-displayphoto-shrink_800_800/0?e=1558569600&v=beta&t=jJPumz3-B8wKLxkUt6WcBM_wRWVIeWGxtGGpyfzm7cE"
@@ -73,16 +82,16 @@
                         <p>Khan University Mathematics Professor <br>
                             Friday 1:00 - 2:00 PM PST
                         </p>
-                        <!-- <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a> -->
                     </li>
                 </ul>
             </div>
         </div>
     </form>
+    
+    <!-- Questions list section-->
     <div class="main ui raised very padded text container segment">
         <h2 class="ui header">QUESTIONS</h2>
         <div class="ui threaded comments">
-            <!-- <h3 class="ui dividing header">QUESTIONS</h3> -->
         </div>
     </div>
     <br>
@@ -90,19 +99,26 @@
 </div>
 
 <!-- START OF FIREBASE APP -->
+
+<!-- Import firebase libraries for realtime cloud database -->
 <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-firestore.js"></script>
 
 <script>
+    // Append question to the question-list DOM element
     const renderQuestion = (doc, id) => {
         const comments = $(".threaded.comments");
         let img;
         let background_color;
-
+        
+        // If the number of likes is greater than 20, highlight the question with yellow
         if (doc.likes >= 20) { background_color = "yellow;"; }
+        // Else if the number of likes is greater or equal to 10, highlight the question with light yellow
         else if (doc.likes >= 10) { background_color = "rgb(255, 255, 219);"; }
+        // Else if the number of likes is less than 10, don't highlight
         else if (doc.likes < 10) { background_color = "white;"; }
-
+        
+        // Change the student profile icon depending on the question submitter
         switch (doc.student) {
             case "Janghoon Lee":
                 img = "/khanacademy_files/robot_male_3.svg";
@@ -120,9 +136,11 @@
                 img = "/khanacademy_files/robot_male_3.svg";
                 break;
         }
-
+        
+        // Stringify the date object
         let date = doc.created_at.toDate().toString();
-
+        
+        // Template HTML for question comment
         const commentHtml = `<div class="comment">
             <a class="avatar bordered">
                 <img style="border: solid 2px rgba(33, 36, 44, 0.16) !important; border-radius: 50%;"
@@ -146,7 +164,8 @@
             </div>
             </div>
         </div>`;
-
+        
+        // Append to the DOM
         comments.append(commentHtml);
     }
     // Initialize Firebase
@@ -159,7 +178,8 @@
         messagingSenderId: "BUCKET_ID"
     };
     firebase.initializeApp(config);
-
+    
+    // Reference variable for database
     var db = firebase.firestore();
 
     // Render Every Question From DB
@@ -169,48 +189,56 @@
             renderQuestion(data, doc.id);
         });
     });
-
+    
+    // Upvote system
     const upVote = (commentID) => {
         console.log(commentID);
         let likeButton = $(`#like_${commentID.id}`);
         let likeCount = $(`#count_${commentID.id}`);
-
+        
+        // Change color on like
         if (likeButton.css('color') === 'rgb(128, 128, 128)') {
             likeButton.css('color', 'blue');
             likeCount.css('color', 'blue');
             commentID.innerText++;
-        } else {
+        } else { // Change color on like again
             likeButton.css('color', 'rgb(128, 128, 128)');
             likeCount.css('color', 'rgb(128, 128, 128)');
             commentID.innerText--;
         }
     }
-
+    
+    // Function to retrieve question DOM value
     const getFormValue = () => {
         const question = $('textarea#question').val();
         return question;
     }
-
+    
+    // Query the database to add a doc
     const submitQuestion = (student) => {
         question = getFormValue();
         console.log("Question:", question);
-
+        
+        // Check the formal validity of the question
         if (question.trim() === "") {
             alert("Question cannot be blank!");
         } else {
+            // Connect to the database and add
             db.collection("questions").add({
                 student: student,
                 question: question,
                 created_at: new Date(),
                 likes: 0
             })
-                .then(function (docRef) {
-                    location.reload();
-                    console.log("Document written with ID: ", docRef.id);
-                })
-                .catch(function (error) {
-                    alert("Error adding document:");
-                });
+            // Resolve a promise and log the query result in the console
+            .then(function (docRef) {
+                location.reload();
+                console.log("Document written with ID: ", docRef.id);
+            })
+            // Throw error message on error
+            .catch(function (error) {
+                alert("Error adding document:");
+            });
         }
     }
 </script>
