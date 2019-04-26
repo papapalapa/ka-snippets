@@ -1,0 +1,47 @@
+
+/**
+ * Fix user-agent
+ */
+
+ * {
+  box-sizing: border-box;
+}
+
+/* Clear margins for the html */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set canvas to black with full width and height */
+.whiteboard {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: black;
+}
+
+/* Fix color positions */
+.colors {
+  position: fixed;
+}
+
+/* Stack colors on the same line */
+.color {
+  display: inline-block;
+  height: 48px;
+  width: 48px;
+}
+
+/* Color selection for the whiteboard */
+.color.white { background-color: white; }
+.color.red { background-color: red; }
+.color.green { background-color: green; }
+.color.blue { background-color: blue; }
+.color.yellow { background-color: yellow; }
+.color.black { background-color: grey;}

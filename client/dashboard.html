@@ -1,0 +1,216 @@
+<div>
+    <!-- START OF MAIN CONTENT -->
+    <div style="height: 330px; background-color: rgb(10, 42, 102);">
+        <center>
+            <br>
+            <img src="https://media.licdn.com/dms/image/C4D03AQG4Bk4R9pF_Ug/profile-displayphoto-shrink_800_800/0?e=1558569600&v=beta&t=jJPumz3-B8wKLxkUt6WcBM_wRWVIeWGxtGGpyfzm7cE"
+                alt="" class="ui image circle small">
+            <h3 style="font-size: 25px; color: white;">Adam Green</h3>
+            <h2 style="margin-top: -20px; font-size: 35px; color: white;">Highschool Biology</h2>
+            <h3 style="margin-top: -10px; color: white;"><span id="countdown"></span></h3>
+        </center>
+    </div>
+    <script>
+        // Set the date we're counting down to
+        var countDownDate = new Date().getTime() + 4000;
+
+        // Update the count down every 1 second
+        var x = setInterval(function () {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the element with id="demo"
+            document.getElementById("countdown").innerHTML = `Staring in: 00:00:${seconds}`;
+
+            var goToClassButton = `<a href="office-hour.html" class="ui orange button">Enter Class</a>`
+            // If the count down is finished, write some text 
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = goToClassButton;
+            }
+        }, 1000);
+    </script>
+    <form name="question-form" class="main ui raised very text container segment reply form">
+        <div class="field">
+            <textarea required id="question" rows="2"></textarea>
+        </div>
+        <div class="ui blue labeled submit icon button" onclick="submitQuestion('Alexander Wu');">
+            <i class="icon edit"></i> Submit Question
+        </div>
+        <div class="ui right close rail">
+            <div class="ui segment left">
+                <ul class="collection">
+                    <li class="collection-item avatar">
+                        <img src="https://media.licdn.com/dms/image/C4D03AQG4Bk4R9pF_Ug/profile-displayphoto-shrink_800_800/0?e=1558569600&v=beta&t=jJPumz3-B8wKLxkUt6WcBM_wRWVIeWGxtGGpyfzm7cE"
+                            alt="" class="circle">
+                        <span class="title">Adam Green</span>
+                        <p>Green University Biology Professor <br>
+                            Wed. 9:00 - 10:00 AM PST
+                        </p>
+                    </li>
+                    <li class="collection-item avatar">
+                        <img src="https://media.licdn.com/dms/image/C5603AQH3vQW-8reo9A/profile-displayphoto-shrink_200_200/0?e=1558569600&v=beta&t=r1Wee9ZmpziFqCotGYKFBNSypH-NdHKXKJ1plPj8n5A"
+                            alt="" class="circle">
+                        <span class="title">Janghoon Lee</span>
+                        <p>Minerva Labs Researcher <br>
+                            Mon. 7:00 - 8:00 PM PST
+                        </p>
+                    </li>
+                    <li class="collection-item avatar">
+                        <img src="https://media.licdn.com/dms/image/C4E03AQGh_fC0rlf8FA/profile-displayphoto-shrink_800_800/0?e=1558569600&v=beta&t=spyJYThZWSqi1YNtK4sXrjSPaH7kmS04sQOQ0HU1CH8"
+                            alt="" class="circle">
+                        <span class="title">Sal Khan</span>
+                        <p>Khan University Mathematics Professor <br>
+                            Friday 1:00 - 2:00 PM PST
+                        </p>
+                        <!-- <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a> -->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+    <div class="main ui raised very padded text container segment">
+        <h2 class="ui header">QUESTIONS</h2>
+        <div class="ui threaded comments">
+            <!-- <h3 class="ui dividing header">QUESTIONS</h3> -->
+        </div>
+    </div>
+    <br>
+    <!-- END OF MAIN CONTENT -->
+</div>
+
+<!-- START OF FIREBASE APP -->
+<script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-firestore.js"></script>
+
+<script>
+    const renderQuestion = (doc, id) => {
+        const comments = $(".threaded.comments");
+        let img;
+        let background_color;
+
+        if (doc.likes >= 20) { background_color = "yellow;"; }
+        else if (doc.likes >= 10) { background_color = "rgb(255, 255, 219);"; }
+        else if (doc.likes < 10) { background_color = "white;"; }
+
+        switch (doc.student) {
+            case "Janghoon Lee":
+                img = "/khanacademy_files/robot_male_3.svg";
+                break;
+            case "Ba Thien Tran":
+                img = "/khanacademy_files/robot_male_2.svg";
+                break;
+            case "Alexander Wu":
+                img = "/khanacademy_files/piceratops-seed.svg";
+                break;
+            case "Alexander Bricken":
+                img = "/khanacademy_files/cs-winston.svg";
+                break;
+            default:
+                img = "/khanacademy_files/robot_male_3.svg";
+                break;
+        }
+
+        let date = doc.created_at.toDate().toString();
+
+        const commentHtml = `<div class="comment">
+            <a class="avatar bordered">
+                <img style="border: solid 2px rgba(33, 36, 44, 0.16) !important; border-radius: 50%;"
+                    src=${img}>
+            </a>
+            <div class="content">
+                <a class="author">${doc.student}</a>
+                <div class="metadata">
+                    <span class="date">${date.substring(4, 25)}</span>
+                </div>
+                <div style="background-color: ${background_color}" class="text">
+                    ${doc.question}
+                </div>
+                <div class="actions">
+                <a id="like_${id}" style="color:grey;" onclick="upVote(${id})">
+                    <i class="thumbs up outline icon"></i>Like
+                </a>
+                <a id="count_${id}" onclick="upVote(${id})">
+                    <span id="${id}">${doc.likes}</span> likes
+                </a>
+            </div>
+            </div>
+        </div>`;
+
+        comments.append(commentHtml);
+    }
+    // Initialize Firebase
+    var config = {
+        apiKey: "AUTHENTICATION_KEY",
+        authDomain: "AUTHENTICATION_URL",
+        databaseURL: "DATABASE_URL",
+        projectId: "PROJECT_ID",
+        storageBucket: "BUCKET_URL",
+        messagingSenderId: "BUCKET_ID"
+    };
+    firebase.initializeApp(config);
+
+    var db = firebase.firestore();
+
+    // Render Every Question From DB
+    db.collection("questions").orderBy("likes", "desc").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            var data = doc.data();
+            renderQuestion(data, doc.id);
+        });
+    });
+
+    const upVote = (commentID) => {
+        console.log(commentID);
+        let likeButton = $(`#like_${commentID.id}`);
+        let likeCount = $(`#count_${commentID.id}`);
+
+        if (likeButton.css('color') === 'rgb(128, 128, 128)') {
+            likeButton.css('color', 'blue');
+            likeCount.css('color', 'blue');
+            commentID.innerText++;
+        } else {
+            likeButton.css('color', 'rgb(128, 128, 128)');
+            likeCount.css('color', 'rgb(128, 128, 128)');
+            commentID.innerText--;
+        }
+    }
+
+    const getFormValue = () => {
+        const question = $('textarea#question').val();
+        return question;
+    }
+
+    const submitQuestion = (student) => {
+        question = getFormValue();
+        console.log("Question:", question);
+
+        if (question.trim() === "") {
+            alert("Question cannot be blank!");
+        } else {
+            db.collection("questions").add({
+                student: student,
+                question: question,
+                created_at: new Date(),
+                likes: 0
+            })
+                .then(function (docRef) {
+                    location.reload();
+                    console.log("Document written with ID: ", docRef.id);
+                })
+                .catch(function (error) {
+                    alert("Error adding document:");
+                });
+        }
+    }
+</script>
