@@ -1,16 +1,18 @@
 <!doctype html>
 <html lang="en">
-
+  
 <head>
   <meta charset="UTF-8">
   <title>Socket.IO whiteboard</title>
+  <!-- Import css -->
   <link rel="stylesheet" href="whiteboard.css">
 </head>
 
 <body>
-
+  <!-- Whiteboard Canvas -->
   <canvas class="whiteboard"></canvas>
-
+  
+  <!-- Color palette section-->
   <div class="colors">
     <div class="color white"></div>
     <div class="color red"></div>
@@ -19,7 +21,8 @@
     <div class="color yellow"></div>
     <div class="color black"></div>
   </div>
-
+  
+  <!-- Import Javascript listener and event files -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="./whiteboard.js"></script>
 </body>
